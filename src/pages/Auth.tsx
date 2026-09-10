@@ -1,4 +1,6 @@
 import { useAuth } from "@/hooks/use-auth";
+import { useConvex } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { HubdexWordmark } from "@/components/hubdex";
 import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
@@ -26,7 +28,8 @@ type Mode = "signIn" | "register";
 type Step = "form" | "otp";
 
 function Auth({ redirectAfterAuth }: AuthProps = {}) {
-  const { isLoading: authLoading, isAuthenticated, signIn } = useAuth();
+  const { isLoading: authLoading, isAuthenticated, signIn, signOut } = useAuth();
+  const convex = useConvex();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirect = resolveRedirectAfterAuth(
@@ -55,8 +58,11 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     setError(null);
 
     const formData = new FormData(event.currentTarget);
+    // Normalize the registration email the same way as at sign-in.
     const name = String(formData.get("name") ?? "").trim();
-    const email = String(formData.get("email") ?? "").trim();
+    const email = String(formData.get("email") ?? "")
+      .trim()
+      .toLowerCase();
     const password = String(formData.get("password") ?? "");
     const confirm = String(formData.get("confirmPassword") ?? "");
 
@@ -79,9 +85,25 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
 
     setIsLoading(true);
     try {
+      // Duplicate pre-check on the normalized email: never create a second
+      // account for an email that already has one. The server still enforces
+      // uniqueness (the normalized email is the account's unique key), so a
+      // race can only fail closed.
+      const emailTaken = await convex.query(api.authAccounts.passwordAccountExists, {
+        email,
+      });
+      if (emailTaken) {
+        setError(
+          "An account with this email already exists. Please sign in instead.",
+        );
+        setIsLoading(false);
+        return;
+      }
       await signIn("password", { flow: "signUp", email, password, name });
-      // Registration succeeds: show a success message and send the user to
-      // the sign-in view (no auto-login, mirroring the Flask version).
+      // Convex Auth stores session tokens on signUp. Sign out so the user
+      // lands on the sign-in page with a success message instead of a live
+      // session (mirrors the Flask registration flow).
+      await signOut();
       setRegisteredEmail(email.toLowerCase());
       setMode("signIn");
       setNotice("Your account has been created. Please sign in.");
@@ -135,7 +157,8 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
       navigate(redirect);
     } catch (err) {
       console.error("Sign-in error:", err);
-      setError("Incorrect email or password.");
+      // Generic message: do not reveal whether the email exists.
+      setError("Invalid email or password.");
     } finally {
       setIsLoading(false);
     }
