@@ -136,6 +136,8 @@ def clean_application(form):
             raise ValueError(f"{field.title()} is limited to {limit} characters.")
         data[field] = value
 
+    data["applied_date"] = (form.get("applied_date") or "").strip()
+
     if not data["company"]:
         raise ValueError("Company is required.")
     if not data["role"]:
