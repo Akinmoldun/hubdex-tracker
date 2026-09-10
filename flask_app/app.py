@@ -181,6 +181,10 @@ def clean_application(form):
 @app.route("/")
 def landing():
     user = current_user()
+    # The public marketing page is for signed-out visitors only; signed-in
+    # users go straight to their dashboard.
+    if user is not None:
+        return redirect(url_for("dashboard"))
     demo_counts = [("Wishlist", 12), ("Applied", 34), ("Interview", 9),
                    ("Offer", 3), ("Rejected", 18)]
     features = [
@@ -215,6 +219,10 @@ def landing():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    # Signed-in users are sent to their dashboard instead of the public
+    # registration page.
+    if request.method == "GET" and current_user() is not None:
+        return redirect(url_for("dashboard"))
     if request.method == "POST":
         email = (request.form.get("email") or "").strip().lower()
         name = (request.form.get("name") or "").strip()[:100]
@@ -272,6 +280,9 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    # Signed-in users have no business on the sign-in page.
+    if request.method == "GET" and current_user() is not None:
+        return redirect(url_for("dashboard"))
     if request.method == "POST":
         email = (request.form.get("email") or "").strip().lower()
         password = request.form.get("password") or ""
@@ -295,7 +306,7 @@ def login():
 def logout():
     session.clear()
     flash("Signed out. Good luck out there.", "success")
-    return redirect(url_for("login"))
+    return redirect(url_for("landing"))
 
 
 # ---------------------------------------------------------------------------

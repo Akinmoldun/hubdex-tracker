@@ -1,19 +1,6 @@
-{% extends "base.html" %}
+{% extends "dashboard_base.html" %}
 
 {% block title %}Dashboard: Hubdex{% endblock %}
-
-{% block header_nav %}{% endblock %}
-
-{% block header_actions %}
-<div class="header-user">
-  <span class="mono header-email">
-    {{ user.name if user.name else user.email }}
-  </span>
-  <form method="post" action="{{ url_for('logout') }}" class="inline-form">
-    <button type="submit" class="btn btn-outline">Sign out</button>
-  </form>
-</div>
-{% endblock %}
 
 {% block content %}
 <div class="container dash">
@@ -68,11 +55,11 @@
     {% if filters.stage != 'All' %}
       <input type="hidden" name="stage" value="{{ filters.stage }}" />
     {% endif %}
-    <div class="search-wrap">
+    <div class="search-form" role="search">
       <input class="input search-input" type="search" name="q" value="{{ filters.q }}"
              placeholder="Search company, role, location" aria-label="Search applications" />
+      <button type="submit" class="btn btn-outline search-btn">Search</button>
     </div>
-    <button type="submit" class="btn btn-outline">Search</button>
     {% if filters.q or filters.stage != 'All' %}
       <a href="{{ url_for('dashboard') }}" class="btn btn-ghost">Clear</a>
     {% endif %}

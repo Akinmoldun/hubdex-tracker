@@ -1,12 +1,6 @@
-{% extends "base.html" %}
+{% extends "dashboard_base.html" %}
 
 {% block title %}{{ 'Edit application' if app_row else 'New application' }}: Hubdex{% endblock %}
-
-{% block header_nav %}{% endblock %}
-
-{% block header_actions %}
-<a href="{{ url_for('dashboard') }}" class="btn btn-outline">Back to hub</a>
-{% endblock %}
 
 {% block content %}
 <div class="container form-page">

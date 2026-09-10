@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='logo.svg') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <title>{% block title %}Dashboard: Hubdex{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}" />
+</head>
+<body class="dash-body">
+  {% block site_header %}
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="header-left">
+        <a href="{{ url_for('dashboard') }}" class="wordmark" aria-label="Hubdex dashboard">
+          <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" class="wordmark-icon">
+            <rect width="32" height="32" fill="#0f62fe"></rect>
+            <g fill="none" stroke="#ffffff" stroke-width="2">
+              <path d="M7 9h6v6H7zM19 9h6v6h-6zM7 19h6v6H7z"></path>
+              <path d="M19 19h6v6h-6z" fill="#ffffff" stroke="none"></path>
+            </g>
+          </svg>
+          <span class="wordmark-text">hubdex</span>
+        </a>
+        {% block header_nav %}
+        <nav class="main-nav dash-nav" aria-label="Dashboard">
+          <a href="{{ url_for('dashboard') }}"
+             {% if request.endpoint == 'dashboard' %}aria-current="page"{% endif %}>Applications</a>
+          <a href="{{ url_for('application_new') }}"
+             {% if request.endpoint == 'application_new' %}aria-current="page"{% endif %}>New application</a>
+        </nav>
+        {% endblock %}
+      </div>
+      <div class="header-right">
+        {% block header_actions %}
+        <div class="header-user">
+          <span class="user-chip" aria-hidden="true">{{ (user.name or user.email) | trim | first | upper }}</span>
+          <span class="header-identity">
+            <span class="header-name">{{ user.name if user.name else user.email }}</span>
+            {% if user.name %}<span class="mono header-email">{{ user.email }}</span>{% endif %}
+          </span>
+        </div>
+        <form method="post" action="{{ url_for('logout') }}" class="inline-form">
+          <button type="submit" class="btn btn-outline">Sign out</button>
+        </form>
+        {% endblock %}
+      </div>
+    </div>
+    <div class="header-accent"></div>
+  </header>
+  {% endblock %}
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="container flash-stack" role="status">
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">
+            <span class="flash-marker"></span>
+            {{ message }}
+            <button type="button" class="flash-close" aria-label="Dismiss">&times;</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  {# Authenticated pages carry no public footer and no authentication links. #}
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

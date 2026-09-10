@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}" />
 </head>
 <body>
+  {% block site_header %}
   <header class="site-header">
     <div class="container header-inner">
       <div class="header-left">
@@ -30,11 +31,19 @@
         {% block header_nav %}{% endblock %}
       </div>
       <div class="header-right">
-        {% block header_actions %}{% endblock %}
+        {% block header_actions %}
+          {% if user %}
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Open dashboard</a>
+          {% else %}
+            <a href="{{ url_for('login') }}" class="btn btn-link">Sign in</a>
+            <a href="{{ url_for('register') }}" class="btn btn-primary">Get started</a>
+          {% endif %}
+        {% endblock %}
       </div>
     </div>
     <div class="header-accent"></div>
   </header>
+  {% endblock %}
 
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -55,7 +64,8 @@
   </main>
 
   {% block footer %}
-  <footer class="site-footer">
+    {% if not user %}
+    <footer class="site-footer">
     <div class="container footer-grid">
       <div class="footer-brand">
         <span class="wordmark wordmark-inverted">
@@ -105,6 +115,7 @@
       <p class="eyebrow">Track &middot; Move &middot; Land the offer</p>
     </div>
   </footer>
+    {% endif %}
   {% endblock %}
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>

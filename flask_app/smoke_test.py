@@ -54,6 +54,9 @@ r = client.get("/")
 check("landing 200", r.status_code == 200)
 check("landing has wordmark", b"Hubdex" in r.data)
 check("landing no em dash", b"\xe2\x80\x94" not in r.data, "em dash found in landing HTML")
+check("landing shows Sign in", b"Sign in" in r.data)
+check("landing shows Get started", b"Get started" in r.data)
+check("landing shows public footer", b"site-footer" in r.data)
 
 r = client.get("/login")
 check("login page 200", r.status_code == 200)
@@ -123,6 +126,35 @@ r = client.post(
 )
 check("case 5: correct credentials sign in", r.status_code == 200 and r.request.path.endswith("/dashboard"))
 
+# --- Public/private separation while signed in -----------------------------
+r = client.get("/")
+check(
+    "signed-in user redirected from landing",
+    r.status_code == 302 and "/dashboard" in r.headers.get("Location", ""),
+)
+r = client.get("/login")
+check(
+    "signed-in user redirected from /login",
+    r.status_code == 302 and "/dashboard" in r.headers.get("Location", ""),
+)
+r = client.get("/register")
+check(
+    "signed-in user redirected from /register",
+    r.status_code == 302 and "/dashboard" in r.headers.get("Location", ""),
+)
+r = client.get("/dashboard")
+check("dashboard has no public footer", b"site-footer" not in r.data)
+check("dashboard has no Sign in button", b"btn btn-link\">Sign in<" not in r.data)
+check("dashboard has no Get started button", b"Get started" not in r.data)
+check("dashboard has no marketing hero", b"hero-title" not in r.data)
+check("dashboard has no public nav links", b"#pipeline" not in r.data)
+check("dashboard shows user name", b"Test User" in r.data or b"header-name" in r.data)
+check("dashboard has Sign out", b"Sign out" in r.data)
+check("dashboard has Add application", b"Add application" in r.data)
+check("dashboard has search form", b"search-form" in r.data and b"search-btn" in r.data)
+check("dashboard has stat strip", b"stat-strip" in r.data and b"tile-strip" in r.data)
+client.post("/logout")
+
 # --- Case 6: signing in with an incorrect password -------------------------
 client.post("/logout")
 r = client.post(
@@ -158,7 +190,7 @@ check(
 
 # 3. Sign out (no session after registration; must be harmless).
 r = client.post("/logout", follow_redirects=True)
-check("seq 3: sign out lands on sign-in page", r.request.path.endswith("/login"))
+check("seq 3: sign out lands on public landing page", r.request.path == "/")
 
 # 4. Sign in with testuser@gmail.com.
 r = client.post("/login", data={"email": "testuser@gmail.com", "password": PW_LONG}, follow_redirects=True)
@@ -233,7 +265,6 @@ check("crud user logged in", r.request.path.endswith("/dashboard"))
 r = client.get("/dashboard")
 check("dashboard 200 when signed in", r.status_code == 200)
 check("dashboard empty state", b"No applications" in r.data or b"empty" in r.data.lower())
-
 r = client.post(
     "/applications/new",
     data={
@@ -313,7 +344,8 @@ check("cross user delete blocked", r.status_code == 404)
 
 # --- Logout / login --------------------------------------------------------
 r = client.post("/logout", follow_redirects=True)
-check("logout redirects to login", r.status_code == 200 and r.request.path.endswith("/login"))
+check("logout redirects to landing", r.status_code == 200 and r.request.path == "/")
+check("landing after logout shows Sign in", b"Sign in" in r.data)
 
 r = client.post("/applications/2/delete", follow_redirects=True)
 check("delete requires login again", r.request.path.endswith("/login"))
