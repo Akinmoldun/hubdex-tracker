@@ -252,8 +252,16 @@ export default function Dashboard() {
         <div className="mt-8 grid grid-cols-2 gap-px border border-border bg-border lg:grid-cols-4">
           <StatCard label="Total applications" value={stats?.total ?? 0} />
           <StatCard label="Active (applied + interview)" value={stats?.active ?? 0} />
-          <StatCard label="Interviews" value={stats?.interviews ?? 0} accent="#6929c4" />
-          <StatCard label="Offers" value={stats?.offers ?? 0} accent="#0e6027" />
+          <StatCard
+            label="Interviews"
+            value={stats?.interviews ?? 0}
+            accent="var(--tag-interview-fg)"
+          />
+          <StatCard
+            label="Offers"
+            value={stats?.offers ?? 0}
+            accent="var(--tag-offer-fg)"
+          />
         </div>
 
         {/* Pipeline strip */}
@@ -271,26 +279,14 @@ export default function Dashboard() {
                   key={s}
                   type="button"
                   onClick={() => setStageFilter(s)}
-                  className="flex items-center justify-between px-4 py-3 text-left transition-colors"
-                  style={{ backgroundColor: active ? "#0f62fe" : "#ffffff" }}
-                  onMouseEnter={(e) => {
-                    if (!active) e.currentTarget.style.backgroundColor = "#f4f4f4";
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!active) e.currentTarget.style.backgroundColor = "#ffffff";
-                  }}
+                  className={`ibm-tile flex items-center justify-between px-4 py-3 text-left transition-colors${
+                    active ? " ibm-tile-active" : ""
+                  }`}
                 >
-                  <span
-                    className="text-sm font-medium"
-                    style={{ color: active ? "#ffffff" : "#161616" }}
-                  >
-                    {s}
-                  </span>
+                  <span className="text-sm font-medium">{s}</span>
                   <span
                     className="font-mono text-sm tabular-nums"
-                    style={{
-                      color: active ? "#d0e2ff" : "#525252",
-                    }}
+                    style={{ color: active ? "var(--primary-foreground)" : "var(--muted-foreground)" }}
                   >
                     {String(count).padStart(2, "0")}
                   </span>
@@ -411,7 +407,7 @@ export default function Dashboard() {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={`Open posting for ${app.company}`}
-                            className="text-[#0f62fe] hover:text-[#0353e8]"
+                            className="text-primary hover:opacity-70"
                           >
                             <ExternalLink className="size-3.5" />
                           </a>

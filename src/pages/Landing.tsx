@@ -74,7 +74,7 @@ export default function Landing() {
             {!isLoading && isAuthenticated ? (
               <Link
                 to="/dashboard"
-                className="inline-flex h-10 items-center gap-2 bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-[#0353e8]"
+                className="inline-flex h-10 items-center gap-2 bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
                 Open dashboard
                 <ArrowRight className="size-4" />
@@ -89,7 +89,7 @@ export default function Landing() {
                 </Link>
                 <Link
                   to="/auth?returnTo=%2Fdashboard"
-                  className="inline-flex h-10 items-center gap-2 bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-[#0353e8]"
+                  className="inline-flex h-10 items-center gap-2 bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                 >
                   Get started
                   <ArrowRight className="size-4" />
@@ -150,14 +150,14 @@ export default function Landing() {
             >
               <Link
                 to="/auth?returnTo=%2Fdashboard"
-                className="inline-flex h-12 items-center gap-2 bg-primary px-7 text-base font-medium text-primary-foreground transition-colors hover:bg-[#0353e8]"
+                className="inline-flex h-12 items-center gap-2 bg-primary px-7 text-base font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
                 Start tracking — it's free
                 <ArrowRight className="size-4" />
               </Link>
               <a
                 href="#how"
-                className="inline-flex h-12 items-center border border-[#161616] px-7 text-base font-medium text-foreground transition-colors hover:bg-[#161616] hover:text-white"
+                className="inline-flex h-12 items-center border border-[#161616] px-7 text-base font-medium text-foreground transition-colors hover:bg-[#161616] hover:text-white dark:border-foreground dark:hover:bg-foreground dark:hover:text-background"
               >
                 See how it works
               </a>
@@ -388,7 +388,7 @@ export default function Landing() {
       </section>
 
       {/* CTA band */}
-      <section className="border-b border-border bg-primary text-white">
+      <section className="border-b border-border bg-primary text-primary-foreground">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-16 sm:px-6 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="ibm-eyebrow text-[#d0e2ff]">Get started</p>

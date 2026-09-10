@@ -201,12 +201,22 @@
 }
 .ibm-grid-dark {
   background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.06) 1px,
+    transparent 1px
+  ),
+  linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Auto-switch the blueprint grid in dark mode */
+.dark .ibm-grid {
+  background-image: linear-gradient(
       to right,
       rgba(255, 255, 255, 0.06) 1px,
       transparent 1px
     ),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 56px 56px;
 }
 
 /* Carbon tag */
@@ -220,4 +230,18 @@
   font-weight: 500;
   line-height: 1;
   white-space: nowrap;
+}
+
+/* Selectable tile (pipeline strip) — theme-aware */
+.ibm-tile {
+  background-color: var(--card);
+  color: var(--foreground);
+}
+.ibm-tile:hover {
+  background-color: var(--muted);
+}
+.ibm-tile-active,
+.ibm-tile-active:hover {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
 }
