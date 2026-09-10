@@ -1,4 +1,4 @@
-// Hubdex landing page — IBM.com visual language: Plex typography,
+// Hubdex landing page. IBM.com visual language: Plex typography,
 // Carbon palette, eyebrow labels, hairline grids, sharp geometry.
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
@@ -27,7 +27,7 @@ const FEATURES = [
   {
     no: "01",
     title: "Pipeline at a glance",
-    body: "Track every opportunity across five stages — from wishlist to offer — with live counts and a searchable, sortable register of every application.",
+    body: "Track every opportunity across five stages, from wishlist to offer, with live counts and a searchable, sortable register of every application.",
   },
   {
     no: "02",
@@ -37,7 +37,7 @@ const FEATURES = [
   {
     no: "03",
     title: "Context that wins interviews",
-    body: "Salary bands, locations, links to the posting, and private notes live next to each application — so you walk into every call prepared.",
+    body: "Salary bands, locations, links to the posting, and private notes live next to each application, so you walk into every call prepared.",
   },
   {
     no: "04",
@@ -119,7 +119,7 @@ export default function Landing() {
               transition={{ duration: 0.4 }}
               className="ibm-eyebrow text-[#0f62fe]"
             >
-              Hubdex — Application tracking
+              Hubdex: Application tracking
             </motion.p>
             <motion.h1
               initial={{ opacity: 0, y: 12 }}
@@ -140,7 +140,7 @@ export default function Landing() {
             >
               Hubdex is the job search tracker for people applying at volume.
               Log every role, move it through the pipeline, and see exactly
-              where your search stands — without a spreadsheet in sight.
+              where your search stands, without a spreadsheet in sight.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 12 }}
@@ -152,7 +152,7 @@ export default function Landing() {
                 to="/auth?returnTo=%2Fdashboard"
                 className="inline-flex h-12 items-center gap-2 bg-primary px-7 text-base font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                Start tracking — it's free
+                Start tracking, it's free
                 <ArrowRight className="size-4" />
               </Link>
               <a
@@ -227,7 +227,7 @@ export default function Landing() {
               ))}
             </div>
             <div className="border-t border-border bg-muted px-5 py-3 text-xs text-muted-foreground">
-              Illustrative workspace — sign in to build your own.
+              Illustrative workspace. Sign in to build your own.
             </div>
           </motion.div>
         </div>
@@ -285,7 +285,7 @@ export default function Landing() {
                     {
                       Wishlist: "Roles worth chasing. Save them before they close.",
                       Applied: "In the market. Counts toward your weekly velocity.",
-                      Interview: "Live conversations — prep notes attached.",
+                      Interview: "Live conversations, prep notes attached.",
                       Offer: "The finish line. Compare and decide with context.",
                       Rejected: "Closed loops, kept for pattern-spotting, not shame.",
                     }[stage]
@@ -362,7 +362,7 @@ export default function Landing() {
               {
                 step: "Step 02",
                 title: "Log the role",
-                body: "Company, title, salary, link, priority — thirty seconds, one form.",
+                body: "Company, title, salary, link, priority: thirty seconds, one form.",
               },
               {
                 step: "Step 03",
@@ -372,7 +372,7 @@ export default function Landing() {
               {
                 step: "Step 04",
                 title: "Read the signals",
-                body: "Live stats show where effort converts — and where it doesn't.",
+                body: "Live stats show where effort converts, and where it doesn't.",
               },
             ].map((s) => (
               <li key={s.step} className="relative border-t-2 border-[#161616] pt-5">
@@ -413,7 +413,7 @@ export default function Landing() {
             <div className="md:col-span-5">
               <HubdexWordmark inverted />
               <p className="mt-4 max-w-sm text-sm leading-relaxed text-[#a8a8a8]">
-                Hubdex is a focused job application tracker — a single hub for
+                Hubdex is a focused job application tracker: a single hub for
                 every role, stage, and decision in your search.
               </p>
             </div>

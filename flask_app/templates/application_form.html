@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit application' if app_row else 'New application' }}: Hubdex{% endblock %}
+
+{% block header_nav %}{% endblock %}
+
+{% block header_actions %}
+<a href="{{ url_for('dashboard') }}" class="btn btn-outline">Back to hub</a>
+{% endblock %}
+
+{% block content %}
+<div class="container form-page">
+  <div class="form-card">
+    <div class="form-accent"></div>
+    <div class="form-body">
+      <p class="eyebrow eyebrow-blue">{{ 'Edit application' if app_row else 'New application' }}</p>
+      <h1 class="form-title">{{ 'Update ' + app_row.company if app_row else 'Log a role' }}</h1>
+      <p class="form-sub">
+        Company and role are required. Everything else is optional, add it as
+        you learn it.
+      </p>
+
+      <form method="post" class="form" novalidate>
+        <div class="form-grid-2">
+          <div class="field">
+            <label class="eyebrow field-label" for="company">Company *</label>
+            <input class="input" id="company" name="company" type="text" required
+                   maxlength="120" value="{{ app_row.company if app_row else '' }}"
+                   placeholder="Acme Corp" />
+          </div>
+          <div class="field">
+            <label class="eyebrow field-label" for="role">Role *</label>
+            <input class="input" id="role" name="role" type="text" required
+                   maxlength="120" value="{{ app_row.role if app_row else '' }}"
+                   placeholder="Frontend Engineer" />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="field">
+            <label class="eyebrow field-label" for="location">Location</label>
+            <input class="input" id="location" name="location" type="text"
+                   maxlength="200" value="{{ app_row.location if app_row else '' }}"
+                   placeholder="Remote / Berlin" />
+          </div>
+          <div class="field">
+            <label class="eyebrow field-label" for="salary">Salary</label>
+            <input class="input" id="salary" name="salary" type="text"
+                   maxlength="100" value="{{ app_row.salary if app_row else '' }}"
+                   placeholder="70k to 90k" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="eyebrow field-label" for="url">Job posting URL</label>
+          <input class="input" id="url" name="url" type="url"
+                 maxlength="500" value="{{ app_row.url if app_row else '' }}"
+                 placeholder="https://careers.example.com/role/123" />
+        </div>
+
+        <div class="form-grid-3">
+          <div class="field">
+            <label class="eyebrow field-label" for="stage">Stage</label>
+            <select class="input select" id="stage" name="stage">
+              {% for s in stages %}
+              <option value="{{ s }}" {{ 'selected' if app_row and s == app_row.stage else '' }}
+                      {{ 'selected' if not app_row and s == 'Wishlist' else '' }}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="field">
+            <label class="eyebrow field-label" for="priority">Priority</label>
+            <select class="input select" id="priority" name="priority">
+              {% for p in priorities %}
+              <option value="{{ p }}" {{ 'selected' if app_row and p == app_row.priority else '' }}
+                      {{ 'selected' if not app_row and p == 'Medium' else '' }}>{{ p }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="field">
+            <label class="eyebrow field-label" for="applied_date">Applied date</label>
+            <input class="input" id="applied_date" name="applied_date" type="date"
+                   value="{{ app_row.applied_date if app_row else '' }}" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="eyebrow field-label" for="notes">Notes</label>
+          <textarea class="input textarea" id="notes" name="notes" rows="3" maxlength="2000"
+                    placeholder="Recruiter contact, interview prep, referral name">{{ app_row.notes if app_row else '' }}</textarea>
+        </div>
+
+        <div class="form-actions">
+          <a href="{{ url_for('dashboard') }}" class="btn btn-ghost">Cancel</a>
+          <button type="submit" class="btn btn-primary">
+            {{ 'Save changes' if app_row else 'Add application' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

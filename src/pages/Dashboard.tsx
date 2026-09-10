@@ -303,7 +303,7 @@ export default function Dashboard() {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search company, role, location…"
+              placeholder="Search company, role, location"
               className="h-10 pl-9"
             />
           </div>
@@ -451,10 +451,10 @@ export default function Dashboard() {
                       <PriorityDot priority={app.priority} />
                     </TableCell>
                     <TableCell className="px-4 py-3 font-mono text-xs tabular-nums text-muted-foreground">
-                      {app.appliedDate ?? "—"}
+                      {app.appliedDate ?? ""}
                     </TableCell>
                     <TableCell className="px-4 py-3 font-mono text-xs tabular-nums">
-                      {app.salary ?? "—"}
+                      {app.salary ?? ""}
                     </TableCell>
                     <TableCell className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
@@ -485,7 +485,7 @@ export default function Dashboard() {
         </div>
 
         <p className="ibm-eyebrow mt-6 text-muted-foreground">
-          Tip: click a stage tag in the table to move an application — counts
+          Tip: click a stage tag in the table to move an application. Counts
           update everywhere instantly.
         </p>
       </main>
@@ -502,7 +502,7 @@ export default function Dashboard() {
               {editing ? `Update ${editing.company}` : "Log a role"}
             </DialogTitle>
             <DialogDescription>
-              Company and role are required. Everything else is optional — add
+              Company and role are required. Everything else is optional, add
               it as you learn it.
             </DialogDescription>
           </DialogHeader>
@@ -657,7 +657,7 @@ export default function Dashboard() {
         <AlertDialogContent className="rounded-none">
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Remove {deleteTarget?.company} — {deleteTarget?.role}?
+              Remove {deleteTarget?.company}: {deleteTarget?.role}?
             </AlertDialogTitle>
             <AlertDialogDescription>
               This permanently removes the application from your hub. This

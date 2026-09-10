@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Get started: Hubdex{% endblock %}
+
+{% block header_actions %}
+<span class="eyebrow muted">Application tracking</span>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap ibm-grid">
+  <div class="auth-card">
+    <div class="auth-accent"></div>
+    <div class="auth-body">
+      <p class="eyebrow eyebrow-blue">Get started</p>
+      <h1 class="auth-title">Create your hub</h1>
+      <p class="auth-sub">
+        One account, every application. Registration takes under a minute and
+        your workspace is ready immediately.
+      </p>
+
+      <form method="post" class="form" novalidate>
+        <div class="field">
+          <label class="eyebrow field-label" for="name">Name (optional)</label>
+          <input class="input" id="name" name="name" type="text"
+                 autocomplete="name" placeholder="Alex Doe" maxlength="100" />
+        </div>
+        <div class="field">
+          <label class="eyebrow field-label" for="email">Email address</label>
+          <input class="input" id="email" name="email" type="email" required
+                 autocomplete="email" placeholder="name@example.com" />
+        </div>
+        <div class="field">
+          <label class="eyebrow field-label" for="password">Password</label>
+          <input class="input" id="password" name="password" type="password" required
+                 autocomplete="new-password" minlength="8" placeholder="At least 8 characters" />
+        </div>
+        <div class="field">
+          <label class="eyebrow field-label" for="confirm">Confirm password</label>
+          <input class="input" id="confirm" name="confirm" type="password" required
+                 autocomplete="new-password" minlength="8" placeholder="Repeat your password" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Create account</button>
+      </form>
+
+      <div class="auth-divider"><span class="eyebrow muted">or</span></div>
+
+      <p class="auth-alt">
+        Already have an account?
+        <a href="{{ url_for('login') }}" class="auth-alt-link">Sign in</a>
+      </p>
+    </div>
+    <div class="auth-foot">Your data stays tied to your account. No sharing, no spam.</div>
+  </div>
+  <p class="eyebrow auth-tagline">Hubdex: Every application. One hub.</p>
+</div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

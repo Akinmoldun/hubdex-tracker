@@ -38,7 +38,7 @@ export default function NotFound() {
             </Link>
           </div>
           <div className="border-t border-border bg-muted px-8 py-3 text-center text-xs text-muted-foreground">
-            Hubdex — Every application. One hub.
+            Hubdex: Every application. One hub.
           </div>
         </div>
       </div>

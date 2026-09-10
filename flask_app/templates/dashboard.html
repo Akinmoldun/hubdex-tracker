@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard: Hubdex{% endblock %}
+
+{% block header_nav %}{% endblock %}
+
+{% block header_actions %}
+<div class="header-user">
+  <span class="mono header-email">{{ user.email }}</span>
+  <form method="post" action="{{ url_for('logout') }}" class="inline-form">
+    <button type="submit" class="btn btn-outline">Sign out</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container dash">
+  <div class="dash-title-row">
+    <div>
+      <p class="eyebrow eyebrow-blue">Your hub</p>
+      <h1 class="dash-title">Application tracker</h1>
+    </div>
+    <a href="{{ url_for('application_new') }}" class="btn btn-primary">
+      <span aria-hidden="true">+</span> Add application
+    </a>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-cell">
+      <p class="eyebrow muted">Total applications</p>
+      <p class="stat-num">{{ '%02d' % stats.total }}</p>
+    </div>
+    <div class="stat-cell">
+      <p class="eyebrow muted">Active (applied + interview)</p>
+      <p class="stat-num">{{ '%02d' % stats.active }}</p>
+    </div>
+    <div class="stat-cell">
+      <p class="eyebrow muted">Interviews</p>
+      <p class="stat-num stat-interview">{{ '%02d' % stats.interviews }}</p>
+    </div>
+    <div class="stat-cell">
+      <p class="eyebrow muted">Offers</p>
+      <p class="stat-num stat-offer">{{ '%02d' % stats.offers }}</p>
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <p class="eyebrow muted">Pipeline</p>
+    <div class="tile-strip">
+      <a href="{{ url_for('dashboard') }}"
+         class="tile {{ 'tile-active' if filters.stage == 'All' else '' }}">
+        <span>All</span>
+        <span class="mono tile-count">{{ '%02d' % stats.total }}</span>
+      </a>
+      {% for stage in stages %}
+      <a href="{{ url_for('dashboard', stage=stage) }}"
+         class="tile {{ 'tile-active' if filters.stage == stage else '' }}">
+        <span>{{ stage }}</span>
+        <span class="mono tile-count">{{ '%02d' % counts[stage] }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <form method="get" action="{{ url_for('dashboard') }}" class="toolbar">
+    {% if filters.stage != 'All' %}
+      <input type="hidden" name="stage" value="{{ filters.stage }}" />
+    {% endif %}
+    <div class="search-wrap">
+      <input class="input search-input" type="search" name="q" value="{{ filters.q }}"
+             placeholder="Search company, role, location" aria-label="Search applications" />
+    </div>
+    <button type="submit" class="btn btn-outline">Search</button>
+    {% if filters.q or filters.stage != 'All' %}
+      <a href="{{ url_for('dashboard') }}" class="btn btn-ghost">Clear</a>
+    {% endif %}
+    <span class="eyebrow muted toolbar-count">{{ applications|length }} shown</span>
+  </form>
+
+  <div class="table-frame">
+    {% if applications|length == 0 %}
+      <div class="empty-state">
+        {% if filters.q or filters.stage != 'All' %}
+          <p class="empty-title">No applications match your filters</p>
+          <p class="empty-sub">Try clearing the search or switching stages.</p>
+          <a href="{{ url_for('dashboard') }}" class="btn btn-outline">Clear filters</a>
+        {% else %}
+          <p class="empty-title">Your hub is empty</p>
+          <p class="empty-sub">Add your first application and start moving it through the pipeline.</p>
+          <a href="{{ url_for('application_new') }}" class="btn btn-primary">Add your first application</a>
+        {% endif %}
+      </div>
+    {% else %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th><span class="eyebrow muted">Company</span></th>
+            <th><span class="eyebrow muted">Role</span></th>
+            <th><span class="eyebrow muted">Stage</span></th>
+            <th><span class="eyebrow muted">Priority</span></th>
+            <th><span class="eyebrow muted">Applied</span></th>
+            <th><span class="eyebrow muted">Salary</span></th>
+            <th class="th-actions"><span class="eyebrow muted">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in applications %}
+          <tr>
+            <td>
+              <div class="cell-company">
+                <span class="company-name">{{ a.company }}</span>
+                {% if a.url %}
+                  <a href="{{ a.url }}" target="_blank" rel="noopener noreferrer"
+                     class="cell-link" aria-label="Open posting for {{ a.company }}">&#8599;</a>
+                {% endif %}
+              </div>
+              {% if a.location %}<p class="cell-sub">{{ a.location }}</p>{% endif %}
+            </td>
+            <td>
+              <span class="cell-role">{{ a.role }}</span>
+              {% if a.notes %}<p class="cell-sub cell-notes">{{ a.notes }}</p>{% endif %}
+            </td>
+            <td>
+              <form method="post" action="{{ url_for('application_stage', app_id=a.id) }}" class="stage-form">
+                <select name="stage" class="stage-select tag tag-{{ a.stage|lower }}" data-app-id="{{ a.id }}"
+                        aria-label="Stage for {{ a.company }}">
+                  {% for s in stages %}
+                  <option value="{{ s }}" {{ 'selected' if s == a.stage else '' }}>{{ s }}</option>
+                  {% endfor %}
+                </select>
+              </form>
+            </td>
+            <td>
+              <span class="priority">
+                <span class="priority-dot priority-{{ a.priority|lower }}"></span>
+                {{ a.priority }}
+              </span>
+            </td>
+            <td class="mono cell-dim">{{ a.applied_date or '' }}</td>
+            <td class="mono">{{ a.salary or '' }}</td>
+            <td class="td-actions">
+              <a href="{{ url_for('application_edit', app_id=a.id) }}" class="icon-btn"
+                 aria-label="Edit {{ a.company }}" title="Edit">&#9998;</a>
+              <form method="post" action="{{ url_for('application_delete', app_id=a.id) }}" class="inline-form delete-form"
+                    data-confirm="Remove {{ a.company }}: {{ a.role }}? This cannot be undone.">
+                <button type="submit" class="icon-btn icon-btn-danger" aria-label="Delete {{ a.company }}" title="Delete">&times;</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </div>
+
+  <p class="eyebrow muted dash-tip">
+    Tip: change a stage tag in the table to move an application. Counts update
+    on your next reload.
+  </p>
+</div>
+{% endblock %}

@@ -276,7 +276,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
           </div>
 
           <p className="ibm-eyebrow mt-6 text-center text-muted-foreground">
-            Hubdex — Every application. One hub.
+            Hubdex: Every application. One hub.
           </p>
         </div>
       </div>

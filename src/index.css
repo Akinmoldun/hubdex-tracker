@@ -42,7 +42,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* Hubdex — IBM Carbon design language */
+/* Hubdex: IBM Carbon design language */
 @theme {
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, sans-serif;
@@ -232,7 +232,7 @@
   white-space: nowrap;
 }
 
-/* Selectable tile (pipeline strip) — theme-aware */
+/* Selectable tile (pipeline strip): theme-aware */
 .ibm-tile {
   background-color: var(--card);
   color: var(--foreground);

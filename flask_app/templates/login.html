@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Sign in: Hubdex{% endblock %}
+
+{% block header_actions %}
+<span class="eyebrow muted">Application tracking</span>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap ibm-grid">
+  <div class="auth-card">
+    <div class="auth-accent"></div>
+    <div class="auth-body">
+      <p class="eyebrow eyebrow-blue">Sign in</p>
+      <h1 class="auth-title">Open your hub</h1>
+      <p class="auth-sub">Welcome back. Sign in to pick up your search where you left it.</p>
+
+      <form method="post" class="form" novalidate>
+        <input type="hidden" name="next" value="{{ next or '' }}" />
+        <div class="field">
+          <label class="eyebrow field-label" for="email">Email address</label>
+          <input class="input" id="email" name="email" type="email" required
+                 autocomplete="email" placeholder="name@example.com" />
+        </div>
+        <div class="field">
+          <label class="eyebrow field-label" for="password">Password</label>
+          <input class="input" id="password" name="password" type="password" required
+                 autocomplete="current-password" placeholder="Your password" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+      </form>
+
+      <div class="auth-divider"><span class="eyebrow muted">or</span></div>
+
+      <p class="auth-alt">
+        New to Hubdex?
+        <a href="{{ url_for('register') }}" class="auth-alt-link">Create your account</a>
+      </p>
+    </div>
+    <div class="auth-foot">By continuing you agree to keep your job search honest.</div>
+  </div>
+  <p class="eyebrow auth-tagline">Hubdex: Every application. One hub.</p>
+</div>
+{% endblock %}
+
+{% block footer %}{% endblock %}
