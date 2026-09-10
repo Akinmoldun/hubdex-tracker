@@ -64,12 +64,33 @@ r = client.get("/dashboard")
 check("dashboard 200 when signed in", r.status_code == 200)
 check("dashboard empty state", b"No applications" in r.data or b"empty" in r.data.lower())
 
+# Validation: missing full name
+r = client.post(
+    "/register",
+    data={"email": "x@example.com", "name": "", "password": "hunter2hunter2", "confirm": "hunter2hunter2"},
+)
+check("missing name rejected", b"Full name is required" in r.data)
+
+# Validation: bad email format
+r = client.post(
+    "/register",
+    data={"email": "not-an-email", "name": "X", "password": "hunter2hunter2", "confirm": "hunter2hunter2"},
+)
+check("bad email format rejected", b"valid email address" in r.data)
+
 # Validation: short password
 r = client.post(
     "/register",
     data={"email": "x@example.com", "name": "X", "password": "short", "confirm": "short"},
 )
 check("short password rejected", b"at least 8" in r.data)
+
+# Validation: mismatched confirm
+r = client.post(
+    "/register",
+    data={"email": "x@example.com", "name": "X", "password": "hunter2hunter2", "confirm": "different123"},
+)
+check("password mismatch rejected", b"Passwords do not match" in r.data)
 
 # Duplicate email
 r = client.post(
@@ -167,7 +188,7 @@ check("cross user delete blocked", r.status_code == 404)
 
 # --- Logout / login --------------------------------------------------------
 r = client.post("/logout", follow_redirects=True)
-check("logout", r.status_code == 200)
+check("logout redirects to login", r.status_code == 200 and b"Sign in" in r.data and b"login" in r.request.path.encode())
 
 r = client.post(
     "/login",
@@ -197,6 +218,13 @@ r = client.get("/static/js/main.js")
 check("main.js served", r.status_code == 200)
 r = client.get("/static/logo.svg")
 check("logo.svg served", r.status_code == 200)
+
+db = hubdex.sqlite3.connect(hubdex.DATABASE)
+row = db.execute(
+    "SELECT email_verified FROM users WHERE email = 'ada@example.com'"
+).fetchone()
+db.close()
+check("email_verified column present", row is not None and row[0] == 0, f"got {row}")
 
 print()
 if failures:

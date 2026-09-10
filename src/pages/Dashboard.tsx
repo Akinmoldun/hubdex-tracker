@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Doc, Id } from "@/convex/_generated/dataModel";
@@ -93,6 +94,7 @@ function StatCard({
 
 export default function Dashboard() {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const applications = useQuery(api.applications.list);
   const stats = useQuery(api.applications.stats);
@@ -203,6 +205,7 @@ export default function Dashboard() {
 
   const handleSignOut = async () => {
     await signOut();
+    navigate("/auth");
   };
 
   const isLoading = applications === undefined;
@@ -214,11 +217,9 @@ export default function Dashboard() {
         <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6">
           <HubdexWordmark />
           <div className="flex items-center gap-3">
-            {user?.email && (
-              <span className="hidden font-mono text-xs text-muted-foreground sm:inline">
-                {user.email}
-              </span>
-            )}
+            <span className="hidden font-mono text-xs text-muted-foreground sm:inline">
+              {user?.name || user?.email || ""}
+            </span>
             <Button
               variant="outline"
               size="sm"

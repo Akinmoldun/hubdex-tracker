@@ -27,6 +27,10 @@
           <input class="input" id="password" name="password" type="password" required
                  autocomplete="current-password" placeholder="Your password" />
         </div>
+        <div class="field field-row">
+          <a href="#" class="forgot-link"
+             onclick="this.closest('.form')&&alert('Password reset is not available yet. Contact support if you are locked out.');return false;">Forgot password?</a>
+        </div>
         <button type="submit" class="btn btn-primary btn-block">Sign in</button>
       </form>
 

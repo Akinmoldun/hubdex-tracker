@@ -9,7 +9,7 @@ hairline grids, sharp geometry.
 import os
 import re
 import sqlite3
-from datetime import date
+from datetime import date, timedelta
 from functools import wraps
 
 from flask import (
@@ -31,8 +31,14 @@ DATABASE = os.path.join(BASE_DIR, "hubdex.db")
 STAGES = ["Wishlist", "Applied", "Interview", "Offer", "Rejected"]
 PRIORITIES = ["High", "Medium", "Low"]
 
+# Pragmatic email format check: something@something.tld with no spaces.
+EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+
 app = Flask(__name__)
 app.secret_key = os.environ.get("HUBDEX_SECRET_KEY", "dev-key-change-me")
+
+# Keep users signed in across browser restarts (30 days).
+app.permanent_session_lifetime = timedelta(days=30)
 
 
 # ---------------------------------------------------------------------------
@@ -56,11 +62,12 @@ def close_db(_exc):
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS users (
-    id            INTEGER PRIMARY KEY AUTOINCREMENT,
-    email         TEXT NOT NULL UNIQUE,
-    name          TEXT NOT NULL DEFAULT '',
-    password_hash TEXT NOT NULL,
-    created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    email          TEXT NOT NULL UNIQUE,
+    name           TEXT NOT NULL DEFAULT '',
+    password_hash  TEXT NOT NULL,
+    email_verified INTEGER NOT NULL DEFAULT 0,
+    created_at     TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
 CREATE TABLE IF NOT EXISTS applications (
@@ -87,6 +94,14 @@ CREATE INDEX IF NOT EXISTS idx_applications_stage  ON applications(user_id, stag
 def init_db():
     db = sqlite3.connect(DATABASE)
     db.executescript(SCHEMA)
+    # Idempotent migration: add email_verified to databases created by
+    # earlier versions of the app (CREATE TABLE IF NOT EXISTS will not).
+    cols = [row[1] for row in db.execute("PRAGMA table_info(users)").fetchall()]
+    if "email_verified" not in cols:
+        db.execute(
+            "ALTER TABLE users ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 0"
+        )
+        db.commit()
     db.commit()
     db.close()
 
@@ -206,8 +221,16 @@ def register():
         password = request.form.get("password") or ""
         confirm = request.form.get("confirm") or ""
 
-        if not email or "@" not in email:
-            flash("A valid email is required.", "error")
+        if not name:
+            flash("Full name is required.", "error")
+        elif not email:
+            flash("Email is required.", "error")
+        elif not EMAIL_RE.match(email):
+            flash("Enter a valid email address, like name@example.com.", "error")
+        elif not password:
+            flash("Password is required.", "error")
+        elif not confirm:
+            flash("Please confirm your password.", "error")
         elif len(password) < 8:
             flash("Password must be at least 8 characters.", "error")
         elif password != confirm:
@@ -223,8 +246,10 @@ def register():
             except sqlite3.IntegrityError:
                 flash("That email is already registered. Try signing in.", "error")
             else:
+                # Keep the user signed in after registration.
+                session.permanent = True
                 session["user_id"] = cur.lastrowid
-                flash("Welcome to Hubdex. Your hub is ready.", "success")
+                flash("Welcome to Hubdex, " + name + ". Your hub is ready.", "success")
                 return redirect(url_for("dashboard"))
     return render_template("register.html", user=current_user())
 
@@ -238,6 +263,8 @@ def login():
             "SELECT id, password_hash FROM users WHERE email = ?", (email,)
         ).fetchone()
         if row and check_password_hash(row["password_hash"], password):
+            # Keep the user signed in across browser restarts.
+            session.permanent = True
             session["user_id"] = row["id"]
             nxt = request.args.get("next") or request.form.get("next")
             if nxt and nxt.startswith("/") and not nxt.startswith("//"):
@@ -252,7 +279,7 @@ def login():
 def logout():
     session.clear()
     flash("Signed out. Good luck out there.", "success")
-    return redirect(url_for("landing"))
+    return redirect(url_for("login"))
 
 
 # ---------------------------------------------------------------------------

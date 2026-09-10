@@ -6,7 +6,9 @@
 
 {% block header_actions %}
 <div class="header-user">
-  <span class="mono header-email">{{ user.email }}</span>
+  <span class="mono header-email">
+    {{ user.name if user.name else user.email }}
+  </span>
   <form method="post" action="{{ url_for('logout') }}" class="inline-form">
     <button type="submit" class="btn btn-outline">Sign out</button>
   </form>

@@ -622,6 +622,16 @@ h1, h2, h3, h4, p, ol, ul { margin: 0; }
 .auth-alt { font-size: 14px; color: var(--gray-70); }
 .auth-alt-link { font-weight: 600; }
 
+.forgot-link {
+  font-size: 12px;
+  color: var(--gray-50);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.forgot-link:hover { color: var(--blue); }
+
+.field-row { margin: -8px 0 20px; }
+
 .auth-foot {
   padding: 14px 40px;
   border-top: 1px solid var(--gray-20);

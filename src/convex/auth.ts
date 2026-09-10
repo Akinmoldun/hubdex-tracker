@@ -2,9 +2,31 @@
 
 import { convexAuth } from "@convex-dev/auth/server";
 import { Anonymous } from "@convex-dev/auth/providers/Anonymous";
+import { Password } from "@convex-dev/auth/providers/Password";
 import { emailOtp } from "./auth/emailOtp";
 
 
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
-  providers: [emailOtp, Anonymous],
+  providers: [
+    // Email + password registration and sign-in. Passwords are hashed with
+    // Scrypt (Lucia) by the provider, never stored in plain text.
+    Password({
+      profile(params) {
+        const raw = (params.name as string | undefined)?.trim();
+        const name = raw ? raw.slice(0, 100) : undefined;
+        // The profile record must only contain defined Convex values.
+        return {
+          email: params.email as string,
+          ...(name !== undefined ? { name } : {}),
+        };
+      },
+      validatePasswordRequirements(password: string) {
+        if (!password || password.length < 8) {
+          throw new Error("Password must be at least 8 characters.");
+        }
+      },
+    }),
+    emailOtp,
+    Anonymous,
+  ],
 });
