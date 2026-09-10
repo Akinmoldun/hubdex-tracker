@@ -57,6 +57,8 @@ check("landing no em dash", b"\xe2\x80\x94" not in r.data, "em dash found in lan
 check("landing shows Sign in", b"Sign in" in r.data)
 check("landing shows Get started", b"Get started" in r.data)
 check("landing shows public footer", b"site-footer" in r.data)
+check("landing has hamburger toggle", b"nav-toggle" in r.data and b"Open menu" in r.data)
+check("landing signed-out mobile menu has auth links", b"mobile-nav" in r.data)
 
 r = client.get("/login")
 check("login page 200", r.status_code == 200)
@@ -161,6 +163,8 @@ check("dashboard search radius zero in css", b"border-radius: 0;" in client.get(
 # Responsive scaffolding: viewport meta, hamburger menu, mobile panel.
 css = client.get("/static/css/theme.css").data
 check("viewport meta exact", b'width=device-width, initial-scale=1"' in r.data)
+check("hamburger toggle on dashboard", b"nav-toggle" in r.data and b"Open menu" in r.data)
+check("dashboard mobile menu carries sign out", b"mobile-nav-signout" in r.data)
 check("nav toggle present on dashboard", b"nav-toggle" in r.data)
 check("mobile nav panel on dashboard", b"mobile-nav" in r.data)
 check("css box-sizing reset", b"box-sizing: border-box;" in css and b"min-width: 320px;" in css)

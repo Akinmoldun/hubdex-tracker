@@ -97,6 +97,18 @@ h1, h2, h3, h4, p, ol, ul { margin: 0; overflow-wrap: break-word; }
 .muted { color: var(--gray-50); }
 .mono { font-family: var(--font-mono); }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* --------------------------------------------------------------------------
    Buttons: touch-friendly everywhere, zero radius per the Carbon geometry
    -------------------------------------------------------------------------- */
@@ -167,6 +179,11 @@ h1, h2, h3, h4, p, ol, ul { margin: 0; overflow-wrap: break-word; }
 .btn-lg { min-height: 56px; padding: 0 28px; font-size: 16px; }
 .btn-block { width: 100%; }
 
+/* Hero CTAs become full-width tap targets on small phones. */
+@media (max-width: 480px) {
+  .hero-ctas { flex-direction: column; align-items: stretch; }
+}
+
 .inline-form { display: inline; }
 
 /* --------------------------------------------------------------------------
@@ -192,7 +209,7 @@ h1, h2, h3, h4, p, ol, ul { margin: 0; overflow-wrap: break-word; }
 }
 
 .header-left { display: flex; align-items: center; gap: clamp(12px, 3vw, 32px); min-width: 0; }
-.header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; order: 2; margin-left: auto; }
 
 .header-accent { height: 3px; background: var(--blue); }
 
@@ -222,22 +239,35 @@ h1, h2, h3, h4, p, ol, ul { margin: 0; overflow-wrap: break-word; }
 }
 .main-nav a:hover { background: var(--gray-10); text-decoration: none; }
 
-/* Hamburger toggle: hidden on wide screens where the inline nav fits. */
+/* Hamburger toggle: a real button, never browser-default chrome. Hidden on
+   wide screens where the inline nav fits; ordered after the header actions
+   so it always sits at the far right. */
 .nav-toggle {
   display: none;
-  min-height: 44px;
-  padding: 0 16px;
+  appearance: none;
+  -webkit-appearance: none;
+  order: 3;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
   border: 1px solid var(--ink);
   background: var(--white);
   color: var(--ink);
   font-family: var(--font-sans);
   font-size: 14px;
+  line-height: 1;
   cursor: pointer;
+  align-items: center;
+  justify-content: center;
 }
 .nav-toggle:hover { background: var(--gray-10); text-decoration: none; }
 .nav-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.nav-toggle[aria-expanded="true"] { background: var(--ink); color: var(--white); }
 
-/* Collapsible panel shown under the header when the toggle is active. */
+/* Collapsible panel shown under the header when the toggle is active.
+   Spans exactly the header width (never wider than the viewport) and
+   scrolls internally if a tiny landscape screen cannot fit it all. */
 .mobile-nav {
   position: absolute;
   left: 0;
@@ -246,6 +276,8 @@ h1, h2, h3, h4, p, ol, ul { margin: 0; overflow-wrap: break-word; }
   background: var(--white);
   border-bottom: 2px solid var(--ink);
   box-shadow: 0 16px 24px rgba(22, 22, 22, 0.12);
+  max-height: calc(100vh - var(--header-h));
+  overflow-y: auto;
 }
 
 .mobile-nav-links {
@@ -324,18 +356,20 @@ h1, h2, h3, h4, p, ol, ul { margin: 0; overflow-wrap: break-word; }
 
 /* Header breakpoints: shrink gracefully instead of overlapping.
 
-   <=1024px: nav links collapse into the menu; identity moves there too
-             on the dashboard, keeping only the chip + Sign out visible.
-   <=600px:  everything collapses: brand + toggle on the first row,
-             primary action underneath, identity fully in the menu. */
+   Base (mobile): one consistent row = logo left, hamburger right. Every
+                  action (sign in, get started, identity, sign out) lives in
+                  the collapsible menu, so nothing can overlap or crowd.
+   641-1024px:    primary actions return to the header, right-aligned
+                  before the toggle; dashboard identity shows chip + sign
+                  out, while name and email stay in the menu.
+   >1024px:       full inline nav, no toggle. */
 @media (max-width: 1024px) {
   .nav-toggle { display: inline-flex; }
   .main-nav { display: none; }
 }
 
-@media (max-width: 600px) {
-  .header-right .header-user { display: none; }
-  .header-identity { display: none; }
+@media (max-width: 640px) {
+  .site-header .header-right { display: none; }
   .btn { min-height: 44px; }
 }
 
@@ -404,6 +438,15 @@ h1, h2, h3, h4, p, ol, ul { margin: 0; overflow-wrap: break-word; }
   display: grid;
   grid-template-columns: minmax(240px, 1.2fr) minmax(0, 2fr);
   gap: 48px;
+}
+
+/* Mobile footer: compact two-column link layout. Base = mobile-first. */
+@media (max-width: 640px) {
+  .site-footer { padding: 32px 0 24px; }
+  .footer-grid { gap: 24px; }
+  .footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .footer-links { gap: 8px; }
+  .footer-legal { margin-top: 32px; padding-top: 16px; flex-direction: column; align-items: flex-start; gap: 8px; }
 }
 
 .footer-blurb {
@@ -531,7 +574,7 @@ h1, h2, h3, h4, p, ol, ul { margin: 0; overflow-wrap: break-word; }
 
 /* Single-column hero on narrow screens; panel drops its hard shadow so the
    8px offset never overflows the viewport. */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .hero-inner { grid-template-columns: 1fr; }
   .hero-panel { box-shadow: none; }
 }
@@ -844,8 +887,8 @@ h1, h2, h3, h4, p, ol, ul { margin: 0; overflow-wrap: break-word; }
   flex-wrap: wrap;
 }
 
-@media (max-width: 600px) {
-  .form-actions { flex-direction: column-reverse; }
+@media (max-width: 640px) {
+  .form-actions { flex-direction: column-reverse; flex-wrap: wrap; }
   .form-actions .btn { width: 100%; }
 }
 
@@ -917,20 +960,29 @@ h1, h2, h3, h4, p, ol, ul { margin: 0; overflow-wrap: break-word; }
 .dash-title { font-size: clamp(1.75rem, 3vw, 2.4rem); font-weight: 600; }
 
 /* Stack title + button and stretch the button on small screens. */
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .dash-head { flex-direction: column; align-items: stretch; }
   .dash-title-row { flex-direction: column; align-items: stretch; gap: 12px; }
   .dash-add-btn { width: 100%; }
 }
 
-/* Stat strip */
+/* Stat strip: two columns on phones (readable numbers), three at tablet,
+   four when the columns would each be ~180px wide. */
 .stat-strip {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 2px;
   background: var(--gray-20);
   border: 1px solid var(--gray-20);
   margin-bottom: 40px;
+}
+
+@media (min-width: 641px) {
+  .stat-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .stat-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 .stat-cell { background: var(--white); padding: 20px 22px; min-width: 0; }
@@ -1056,7 +1108,7 @@ h1, h2, h3, h4, p, ol, ul { margin: 0; overflow-wrap: break-word; }
 
 /* On small screens the search stacks vertically and both controls go
    full width, so they remain equal height and easy to tap. */
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .search-form {
     flex-direction: column;
     max-width: none;
