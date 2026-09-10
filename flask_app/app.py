@@ -237,20 +237,36 @@ def register():
             flash("Passwords do not match.", "error")
         else:
             db = get_db()
-            try:
-                cur = db.execute(
-                    "INSERT INTO users (email, name, password_hash) VALUES (?, ?, ?)",
-                    (email, name, generate_password_hash(password)),
+            # Duplicate check on the normalized email: never create a second
+            # account for an email that already exists.
+            existing = db.execute(
+                "SELECT id FROM users WHERE email = ?", (email,)
+            ).fetchone()
+            if existing is not None:
+                flash(
+                    "An account with this email already exists. "
+                    "Please sign in instead.",
+                    "error",
                 )
-                db.commit()
-            except sqlite3.IntegrityError:
-                flash("That email is already registered. Try signing in.", "error")
             else:
-                # Keep the user signed in after registration.
-                session.permanent = True
-                session["user_id"] = cur.lastrowid
-                flash("Welcome to Hubdex, " + name + ". Your hub is ready.", "success")
-                return redirect(url_for("dashboard"))
+                try:
+                    db.execute(
+                        "INSERT INTO users (email, name, password_hash) VALUES (?, ?, ?)",
+                        (email, name, generate_password_hash(password)),
+                    )
+                    db.commit()
+                except sqlite3.IntegrityError:
+                    # Race fallback: another request created the same email.
+                    flash(
+                        "An account with this email already exists. "
+                        "Please sign in instead.",
+                        "error",
+                    )
+                else:
+                    # Registration succeeds: show success and send the user
+                    # to the sign-in page (no auto-login).
+                    flash("Your account has been created. Please sign in.", "success")
+                    return redirect(url_for("login"))
     return render_template("register.html", user=current_user())
 
 
@@ -270,7 +286,7 @@ def login():
             if nxt and nxt.startswith("/") and not nxt.startswith("//"):
                 return redirect(nxt)
             return redirect(url_for("dashboard"))
-        flash("Incorrect email or password.", "error")
+        flash("Invalid email or password.", "error")
     return render_template("login.html", user=current_user(),
                            next=request.args.get("next") or "")
 

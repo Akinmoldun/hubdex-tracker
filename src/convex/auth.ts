@@ -12,11 +12,17 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
     // Scrypt (Lucia) by the provider, never stored in plain text.
     Password({
       profile(params) {
+        // Normalize the email (trim + lowercase) so registration and sign-in
+        // both resolve to the same account regardless of casing or spaces.
+        // Convex Auth keys accounts on this email, so a duplicate signUp on a
+        // normalized email is rejected server-side (never a second account),
+        // while the same normalized email can always sign in.
+        const email = String(params.email ?? "").trim().toLowerCase();
         const raw = (params.name as string | undefined)?.trim();
         const name = raw ? raw.slice(0, 100) : undefined;
         // The profile record must only contain defined Convex values.
         return {
-          email: params.email as string,
+          email,
           ...(name !== undefined ? { name } : {}),
         };
       },

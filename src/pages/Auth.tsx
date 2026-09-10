@@ -40,6 +40,8 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
@@ -78,13 +80,23 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     setIsLoading(true);
     try {
       await signIn("password", { flow: "signUp", email, password, name });
-      navigate(redirect);
+      // Registration succeeds: show a success message and send the user to
+      // the sign-in view (no auto-login, mirroring the Flask version).
+      setRegisteredEmail(email.toLowerCase());
+      setMode("signIn");
+      setNotice("Your account has been created. Please sign in.");
     } catch (err) {
       console.error("Registration error:", err);
-      const message = err instanceof Error ? err.message : "";
-      if (message.includes("Account already exists")) {
-        setError("An account with this email already exists. Try signing in.");
-      } else if (message.toLowerCase().includes("password")) {
+      const message = err instanceof Error ? err.message.toLowerCase() : "";
+      if (
+        message.includes("already exists") ||
+        message.includes("unique") ||
+        message.includes("duplicate")
+      ) {
+        setError(
+          "An account with this email already exists. Please sign in instead.",
+        );
+      } else if (message.includes("password")) {
         setError("Password must be at least 8 characters long.");
       } else {
         setError("Registration failed. Please try again.");
@@ -102,7 +114,10 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     setError(null);
 
     const formData = new FormData(event.currentTarget);
-    const email = String(formData.get("email") ?? "").trim();
+    // Normalize the sign-in email the same way as at registration.
+    const email = String(formData.get("email") ?? "")
+      .trim()
+      .toLowerCase();
     const password = String(formData.get("password") ?? "");
 
     if (!email || !password) {
@@ -192,6 +207,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     setMode(next);
     setStep("form");
     setError(null);
+    setNotice(null);
   };
 
   return (
@@ -348,6 +364,15 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                         search where you left it.
                       </p>
 
+                      {notice && (
+                        <p
+                          role="status"
+                          className="mt-4 border border-[#0f62fe] bg-[#edf5ff] px-3 py-2 text-sm text-[#0f62fe] dark:border-primary dark:bg-primary/10 dark:text-[#78a9ff]"
+                        >
+                          {notice}
+                        </p>
+                      )}
+
                       <form onSubmit={handlePasswordSignIn} className="mt-6" noValidate>
                         <label
                           htmlFor="signin-email"
@@ -363,6 +388,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                             placeholder="name@example.com"
                             type="email"
                             autoComplete="email"
+                            defaultValue={registeredEmail ?? undefined}
                             className="h-11 bg-background pl-9"
                             disabled={isLoading}
                             required
