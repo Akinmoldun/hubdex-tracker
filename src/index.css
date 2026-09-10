@@ -1,0 +1,223 @@
+/* DO NOT CHANGE */
+@import "tailwindcss";
+@import "tw-animate-css";
+@custom-variant dark (&:is(.dark *));
+
+/* DO NOT CHANGE */
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* Hubdex — IBM Carbon design language */
+@theme {
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+}
+
+/* CHANGE VALUES FOR THEME */
+:root {
+  --radius: 0rem;
+
+  /* Carbon "white" theme */
+  --background: #ffffff;
+  --foreground: #161616;
+  --card: #ffffff;
+  --card-foreground: #161616;
+  --popover: #ffffff;
+  --popover-foreground: #161616;
+  --primary: #0f62fe;
+  --primary-foreground: #ffffff;
+  --secondary: #e0e0e0;
+  --secondary-foreground: #161616;
+  --muted: #f4f4f4;
+  --muted-foreground: #525252;
+  --accent: #e0e0e0;
+  --accent-foreground: #161616;
+  --destructive: #da1e28;
+  --border: #e0e0e0;
+  --input: #8d8d8d;
+  --ring: #0f62fe;
+  --chart-1: #1192e8;
+  --chart-2: #42be65;
+  --chart-3: #ff7eb6;
+  --chart-4: #fa4d56;
+  --chart-5: #f1c21b;
+  --sidebar: #f4f4f4;
+  --sidebar-foreground: #161616;
+  --sidebar-primary: #0f62fe;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e0e0e0;
+  --sidebar-accent-foreground: #161616;
+  --sidebar-border: #e0e0e0;
+  --sidebar-ring: #0f62fe;
+
+  /* Pipeline stage tag colors (Carbon tags) */
+  --tag-wishlist-bg: #e0e0e0;
+  --tag-wishlist-fg: #393939;
+  --tag-applied-bg: #d0e2ff;
+  --tag-applied-fg: #0043ce;
+  --tag-interview-bg: #e8daff;
+  --tag-interview-fg: #6929c4;
+  --tag-offer-bg: #a7f0ba;
+  --tag-offer-fg: #0e6027;
+  --tag-rejected-bg: #ffd7d9;
+  --tag-rejected-fg: #a2191f;
+
+  /* Priority markers */
+  --pri-high: #da1e28;
+  --pri-medium: #f1c21b;
+  --pri-low: #a8a8a8;
+}
+
+.dark {
+  /* Carbon "g100" theme */
+  --background: #161616;
+  --foreground: #f4f4f4;
+  --card: #262626;
+  --card-foreground: #f4f4f4;
+  --popover: #262626;
+  --popover-foreground: #f4f4f4;
+  --primary: #4589ff;
+  --primary-foreground: #161616;
+  --secondary: #393939;
+  --secondary-foreground: #f4f4f4;
+  --muted: #262626;
+  --muted-foreground: #a8a8a8;
+  --accent: #393939;
+  --accent-foreground: #f4f4f4;
+  --destructive: #fa4d56;
+  --border: #393939;
+  --input: #6f6f6f;
+  --ring: #4589ff;
+  --chart-1: #42be65;
+  --chart-2: #33b1ff;
+  --chart-3: #ff7eb6;
+  --chart-4: #fa4d56;
+  --chart-5: #f1c21b;
+  --sidebar: #262626;
+  --sidebar-foreground: #f4f4f4;
+  --sidebar-primary: #4589ff;
+  --sidebar-primary-foreground: #161616;
+  --sidebar-accent: #393939;
+  --sidebar-accent-foreground: #f4f4f4;
+  --sidebar-border: #393939;
+  --sidebar-ring: #4589ff;
+
+  --tag-wishlist-bg: #393939;
+  --tag-wishlist-fg: #e0e0e0;
+  --tag-applied-bg: #002d9c;
+  --tag-applied-fg: #d0e2ff;
+  --tag-interview-bg: #491d8b;
+  --tag-interview-fg: #e8daff;
+  --tag-offer-bg: #044317;
+  --tag-offer-fg: #a7f0ba;
+  --tag-rejected-bg: #a2191f;
+  --tag-rejected-fg: #ffd7d9;
+
+  --pri-high: #fa4d56;
+  --pri-medium: #f1c21b;
+  --pri-low: #8d8d8d;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    background: #d0e2ff;
+    color: #161616;
+  }
+  .dark ::selection {
+    background: #144a8f;
+    color: #f4f4f4;
+  }
+  button:not([disabled]),
+  [role="button"]:not([disabled]) {
+    cursor: pointer;
+  }
+}
+
+/* IBM-style eyebrow label: mono, uppercase, wide tracking */
+.ibm-eyebrow {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* Blueprint grid backgrounds */
+.ibm-grid {
+  background-image: linear-gradient(
+      to right,
+      rgba(22, 22, 22, 0.05) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(22, 22, 22, 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+.ibm-grid-dark {
+  background-image: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.06) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Carbon tag */
+.ibm-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 1.5rem;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
