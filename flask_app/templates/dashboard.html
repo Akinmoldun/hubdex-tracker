@@ -4,14 +4,16 @@
 
 {% block content %}
 <div class="container dash">
-  <div class="dash-title-row">
-    <div>
-      <p class="eyebrow eyebrow-blue">Your hub</p>
-      <h1 class="dash-title">Application tracker</h1>
+  <div class="dash-head">
+    <div class="dash-title-row">
+      <div>
+        <p class="eyebrow eyebrow-blue">Your hub</p>
+        <h1 class="dash-title">Application tracker</h1>
+      </div>
+      <a href="{{ url_for('application_new') }}" class="btn btn-primary dash-add-btn">
+        <span aria-hidden="true">+</span> Add application
+      </a>
     </div>
-    <a href="{{ url_for('application_new') }}" class="btn btn-primary">
-      <span aria-hidden="true">+</span> Add application
-    </a>
   </div>
 
   <div class="stat-strip">
@@ -76,7 +78,7 @@
         {% else %}
           <p class="empty-title">Your hub is empty</p>
           <p class="empty-sub">Add your first application and start moving it through the pipeline.</p>
-          <a href="{{ url_for('application_new') }}" class="btn btn-primary">Add your first application</a>
+          <p class="empty-sub">Use the button above to log it.</p>
         {% endif %}
       </div>
     {% else %}

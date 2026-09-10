@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='logo.svg') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -32,11 +32,10 @@
         <nav class="main-nav dash-nav" aria-label="Dashboard">
           <a href="{{ url_for('dashboard') }}"
              {% if request.endpoint == 'dashboard' %}aria-current="page"{% endif %}>Applications</a>
-          <a href="{{ url_for('application_new') }}"
-             {% if request.endpoint == 'application_new' %}aria-current="page"{% endif %}>New application</a>
         </nav>
         {% endblock %}
       </div>
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
       <div class="header-right">
         {% block header_actions %}
         <div class="header-user">
@@ -51,6 +50,17 @@
         </form>
         {% endblock %}
       </div>
+    </div>
+    <div id="site-nav" class="mobile-nav" hidden>
+    {% block mobile_nav %}
+    <nav class="mobile-nav-links" aria-label="Dashboard">
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <span class="mobile-nav-identity" aria-hidden="true">{{ user.name if user.name else user.email }}</span>
+      <form method="post" action="{{ url_for('logout') }}" class="mobile-nav-form">
+        <button type="submit" class="btn btn-outline mobile-nav-signout">Sign out</button>
+      </form>
+    </nav>
+    {% endblock %}
     </div>
     <div class="header-accent"></div>
   </header>

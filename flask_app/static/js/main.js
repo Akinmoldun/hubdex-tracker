@@ -42,6 +42,37 @@
     });
   });
 
+  // Mobile navigation: open/close the collapsible menu.
+  var toggle = document.querySelector(".nav-toggle");
+  var panel = document.getElementById("site-nav");
+  if (toggle && panel) {
+    var setMenu = function (open) {
+      panel.hidden = !open;
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    };
+    toggle.addEventListener("click", function () {
+      setMenu(panel.hidden);
+    });
+    // Close after choosing a link, on Escape, and when growing past the
+    // breakpoint where the inline nav reappears.
+    panel.addEventListener("click", function (event) {
+      if (event.target.closest("a")) {
+        setMenu(false);
+      }
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && !panel.hidden) {
+        setMenu(false);
+        toggle.focus();
+      }
+    });
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 1024) {
+        setMenu(false);
+      }
+    });
+  }
+
   // Keep the search input focused when a search is active.
   var searchInput = document.querySelector(".search-input[name='q']");
   if (searchInput && searchInput.value) {

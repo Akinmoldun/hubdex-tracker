@@ -151,8 +151,24 @@ check("dashboard has no public nav links", b"#pipeline" not in r.data)
 check("dashboard shows user name", b"Test User" in r.data or b"header-name" in r.data)
 check("dashboard has Sign out", b"Sign out" in r.data)
 check("dashboard has Add application", b"Add application" in r.data)
+check("dashboard has no duplicate add control", r.data.count(b"Add application") == 1)
+check("dashboard nav has no New application item", b"New application</a>" not in r.data)
 check("dashboard has search form", b"search-form" in r.data and b"search-btn" in r.data)
 check("dashboard has stat strip", b"stat-strip" in r.data and b"tile-strip" in r.data)
+check("dashboard search button styled without hover", b"btn-outline search-btn" in r.data)
+check("dashboard search radius zero in css", b"border-radius: 0;" in client.get("/static/css/theme.css").data)
+
+# Responsive scaffolding: viewport meta, hamburger menu, mobile panel.
+css = client.get("/static/css/theme.css").data
+check("viewport meta exact", b'width=device-width, initial-scale=1"' in r.data)
+check("nav toggle present on dashboard", b"nav-toggle" in r.data)
+check("mobile nav panel on dashboard", b"mobile-nav" in r.data)
+check("css box-sizing reset", b"box-sizing: border-box;" in css and b"min-width: 320px;" in css)
+check("css html overflow guard", b"overflow-x: hidden;" in css)
+check("css search heights match", b"height: 44px;" in css)
+check("css search stacks on small screens", b"flex-direction: column;" in css)
+check("css fluid grids", b"auto-fit, minmax(min(" in css)
+check("css clamp used", b"clamp(" in css)
 client.post("/logout")
 
 # --- Case 6: signing in with an incorrect password -------------------------

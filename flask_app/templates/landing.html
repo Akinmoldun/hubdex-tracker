@@ -3,10 +3,20 @@
 {% block title %}Hubdex: Job Application Tracker{% endblock %}
 
 {% block header_nav %}
-<nav class="main-nav">
+<nav class="main-nav" id="landing-nav" aria-label="Marketing">
   <a href="#pipeline">Pipeline</a>
   <a href="#features">Features</a>
   <a href="#how">How it works</a>
+</nav>
+{% endblock %}
+
+{% block mobile_nav %}
+<nav class="mobile-nav-links" aria-label="Marketing">
+  <a href="#pipeline">Pipeline</a>
+  <a href="#features">Features</a>
+  <a href="#how">How it works</a>
+  <a href="{{ url_for('login') }}">Sign in</a>
+  <a href="{{ url_for('register') }}">Get started</a>
 </nav>
 {% endblock %}
 
