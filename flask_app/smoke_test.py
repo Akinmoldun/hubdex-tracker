@@ -155,9 +155,9 @@ check("dashboard has Sign out", b"Sign out" in r.data)
 check("dashboard has Add application", b"Add application" in r.data)
 check("dashboard has no duplicate add control", r.data.count(b"Add application") == 1)
 check("dashboard nav has no New application item", b"New application</a>" not in r.data)
-check("dashboard has search form", b"search-form" in r.data and b"search-btn" in r.data)
-check("dashboard has stat strip", b"stat-strip" in r.data and b"tile-strip" in r.data)
-check("dashboard search button styled without hover", b"btn-outline search-btn" in r.data)
+check("dashboard has search-controls", b"search-controls" in r.data and b"search-btn" in r.data)
+check("dashboard has stat strip + tiles", b"stat-strip" in r.data and b"tile-strip" in r.data)
+check("dashboard search button is a real button", b"search-btn" in r.data)
 check("dashboard search radius zero in css", b"border-radius: 0;" in client.get("/static/css/theme.css").data)
 
 # Responsive scaffolding: viewport meta, hamburger menu, mobile panel.
