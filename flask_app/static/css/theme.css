@@ -423,62 +423,74 @@ h1, h2, h3, h4, p, ol, ul { margin: 0; overflow-wrap: break-word; }
 .flash-close:hover { color: var(--ink); }
 
 /* --------------------------------------------------------------------------
-   Footer
+   Footer: responsive container, side-by-side sections, no large gaps.
    -------------------------------------------------------------------------- */
 
 .site-footer {
+  width: 100%;
+  box-sizing: border-box;
   background: var(--ink);
   color: var(--gray-30);
   border-top: 3px solid var(--blue);
-  padding: 56px 0 40px;
+  padding: 40px 24px 20px;
   margin-top: 0;
+  overflow: hidden;
 }
 
-.footer-grid {
+.footer-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(240px, 1.2fr) minmax(0, 2fr);
-  gap: 48px;
-}
-
-/* Mobile footer: compact two-column link layout. Base = mobile-first. */
-@media (max-width: 640px) {
-  .site-footer { padding: 32px 0 24px; }
-  .footer-grid { gap: 24px; }
-  .footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-  .footer-links { gap: 8px; }
-  .footer-legal { margin-top: 32px; padding-top: 16px; flex-direction: column; align-items: flex-start; gap: 8px; }
-}
-
-.footer-blurb {
-  margin-top: 16px;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--gray-30);
-  max-width: 320px;
-}
-
-.footer-cols {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+  grid-template-columns: minmax(220px, 1.5fr) repeat(3, minmax(120px, 1fr));
   gap: 32px;
+  align-items: start;
 }
 
-.footer-heading { color: var(--gray-50); margin-bottom: 14px; }
+.footer-brand {
+  min-width: 0;
+  padding-inline: 0;
+}
+
+.footer-column {
+  min-width: 0;
+}
+
+.footer-heading {
+  color: var(--gray-50);
+  margin: 0 0 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
 
 .footer-links {
   list-style: none;
   padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   font-size: 14px;
 }
-.footer-links a { color: var(--gray-30); }
-.footer-links a:hover { color: var(--white); }
+
+.footer-links a {
+  color: var(--gray-30);
+  display: block;
+  padding: 0;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.footer-links a:hover {
+  color: var(--white);
+}
 
 .footer-legal {
-  margin-top: 48px;
-  padding-top: 24px;
+  margin-top: 32px;
+  padding-top: 16px;
   border-top: 1px solid var(--gray-70);
   display: flex;
   justify-content: space-between;
@@ -486,8 +498,80 @@ h1, h2, h3, h4, p, ol, ul { margin: 0; overflow-wrap: break-word; }
   gap: 16px;
   flex-wrap: wrap;
 }
-.footer-legal .mono { color: var(--gray-50); font-size: 13px; }
-.footer-legal .eyebrow { color: var(--gray-50); }
+
+.footer-legal .mono {
+  color: var(--gray-50);
+  font-size: 13px;
+}
+
+.footer-legal .eyebrow {
+  color: var(--gray-50);
+  letter-spacing: 0.08em;
+}
+
+/* Keep the footer sharp on small phones instead of leaving a big gap
+   between the brand blurb and the link columns. */
+@media (max-width: 768px) {
+  .site-footer {
+    padding: 32px 16px 16px;
+  }
+
+  .footer-container {
+    grid-template-columns: minmax(0, 1.2fr) repeat(2, minmax(0, 1fr));
+    gap: 24px 16px;
+  }
+
+  .footer-legal {
+    justify-content: center;
+    text-align: center;
+    margin-top: 24px;
+  }
+}
+
+@media (max-width: 520px) {
+  .footer-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 16px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .footer-legal {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+/* Remove from 430px down so the brand and nav columns do not collide.
+   Two columns for the four nav groups keeps them group with headings. */
+@media (max-width: 430px) {
+  .footer-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 14px;
+  }
+
+  .footer-heading,
+  .footer-links {
+    font-size: 13px;
+  }
+
+  .footer-heading {
+    margin-bottom: 8px;
+  }
+
+  .footer-links {
+    gap: 6px;
+  }
+
+  .footer-legal {
+    padding-top: 12px;
+    margin-top: 20px;
+  }
+}
 
 /* --------------------------------------------------------------------------
    Landing: hero
